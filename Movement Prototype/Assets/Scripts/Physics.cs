@@ -9,7 +9,7 @@ public class Physics : MonoBehaviour
 
     float fps = 60;
     float coFriction = .25f;
-    float gravity = 9.8f;
+    float gravity = 1.2f;
 
 
     // On game start
@@ -25,6 +25,11 @@ public class Physics : MonoBehaviour
         {
             Destroy(gameObject);
         }
+	}
+
+	public float calcGravity(float yVelocity)
+	{
+		return yVelocity - (gravity / fps);
 	}
 
     public float CalcFriction(float xVelocity)
