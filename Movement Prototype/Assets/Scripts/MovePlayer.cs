@@ -10,54 +10,116 @@ public class MovePlayer : MonoBehaviour
     float yMax = .3f;
     float mass = 80;
 
+    // Hardcoded collision Vector
+    List<List<float>> collidables = new List<List<float>>();
+
     // Use this for initialization
     void Start ()
     {
-		print ("Size: " + GetComponent<Renderer> ().bounds.size);
-	}
+        // Add hardcoded collidables
+        collidables.Add(new List<float>(new float[] { 0, 0, 100, 0 }));
+        collidables.Add(new List<float>(new float[] { -5, 2, 1, 4 }));
+        collidables.Add(new List<float>(new float[] { 5, 1, 4, 2 }));
+    }
 	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-        bool hitKey = false;
+        float playerLeftbound = transform.position.x - .5f;
+        float playerRightbound = transform.position.x + .5f;
+        float playerUpperbound = transform.position.y + .5f;
+        float playerLowerbound = transform.position.y - .5f;
 
-		yVelocity = Physics.PHYS.calcGravity (yVelocity);
+        bool xLeftCollision = false;
+        bool xRightCollision = false;
+        bool yUpperCollision = false;
+        bool yLowerCollision = false;
 
-        if (Input.GetKey(GameManager.GM.left))
+        bool rValid = true;
+        bool lValid = true;
+        bool jValid = true;
+
+        foreach (List<float> item in collidables)
+        {
+            float itemLeftbound = item[0] - (item[2] / 2);
+            float itemRightbound = item[0] + (item[2] / 2);
+            float itemUpperbound = item[1] + (item[3] / 2);
+            float itemLowerbound = item[1] - (item[3] / 2);
+
+            // Left collision
+            if ((playerLeftbound <= itemRightbound) && (playerLeftbound >= itemLeftbound))
+            {
+                print("Holiday");
+                xLeftCollision = true;
+            }
+
+            // Right collision
+            if ((playerRightbound >= itemLeftbound) && (playerRightbound <= itemRightbound))
+            {
+                xRightCollision = true;
+            }
+
+            // Upper collision
+            if ((playerUpperbound >= itemLowerbound) && (playerUpperbound <= itemUpperbound))
+            {
+                yUpperCollision = true;
+            }
+
+            // Lower collision
+            if ((playerLowerbound <= itemUpperbound) && (playerLowerbound >= itemLowerbound))
+            {
+                yLowerCollision = true;
+            }
+        }
+
+        if (xLeftCollision)
+        {
+            xVelocity = 0;
+            lValid = false;
+        }
+
+        if (xRightCollision)
+        {
+            xVelocity = 0;
+            rValid = false;
+        }
+
+        // Stop y movement on vertical collision & apply friction
+        if (yUpperCollision || yLowerCollision)
+        {
+            yVelocity = 0;
+            xVelocity = Physics.PHYS.calcFriction(xVelocity);
+        }
+
+        // If airborne, apply gravity
+        if (!yLowerCollision)
+        {
+            yVelocity = Physics.PHYS.calcGravity(yVelocity);
+            jValid = false;
+        }
+
+        // Respond to key events
+        if (Input.GetKey(GameManager.GM.left) && lValid)
         {
             if (xVelocity > -xMax)
             {
                 xVelocity = xVelocity - .01f;
-                hitKey = true;
-            }        
+            }
         }
-        if (Input.GetKey(GameManager.GM.right))
+        if (Input.GetKey(GameManager.GM.right) && rValid)
         {
             if (xVelocity < xMax)
             {
                 xVelocity = xVelocity + .01f;
-                hitKey = true;
-            }       
+            }
         }
-        if (Input.GetKey(GameManager.GM.jump))
+        if (Input.GetKey(GameManager.GM.jump) && jValid)
         {
             transform.position += Vector3.up / 2;
-            hitKey = true;
         }
 
-        else if (!hitKey)
-        {
-            transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
-        }
-    }
-
-    void MoveHorizontal(bool direction, bool airborne = false)
-    {
-        if (airborne == false)
-        {
-            xVelocity = Physics.PHYS.calcFriction(xVelocity);
-        }
-
+        // Apply velocity change
         transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
     }
 }
