@@ -8,8 +8,8 @@ public class Physics : MonoBehaviour
     public static Physics PHYS;
 
     float fps = 60;
-    float coFriction = .25f;
-    float gravity = 9.8f;
+    float coFriction = .5f;
+    float gravity = 1.2f;
 
 
     // On game start
@@ -27,9 +27,22 @@ public class Physics : MonoBehaviour
         }
 	}
 
-    public float CalcFriction(float xVelocity)
+    public float calcFriction(float xVelocity)
     {
-        return xVelocity + (coFriction * gravity)/60;
+        if (xVelocity > .01)
+        {
+            return xVelocity - (coFriction * gravity) / 60;
+        }
+
+        else if (xVelocity < -.01)
+        {
+            return xVelocity + (coFriction * gravity) / 60;
+        }
+
+        else
+        {
+            return xVelocity = 0;
+        }
     }
 
     // Use this for initialization
