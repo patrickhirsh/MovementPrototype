@@ -12,10 +12,10 @@ public class Physics : MonoBehaviour
     float gravity = 1.2f;
 
 
-    // On game start
+    // Singleton pattern
     void Awake()
     {
-        // Ensure we only ever have one GameManager object
+        // Ensure we only ever have one Physics object
         if (PHYS == null)
         {
             DontDestroyOnLoad(gameObject);

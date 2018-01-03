@@ -4,117 +4,63 @@ using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
+    // Player attributes
     float xVelocity = 0;
     float yVelocity = 0;
+    float mass = 80;
     float xMax = .3f;
     float yMax = .3f;
-    float mass = 80;
 
-    // Hardcoded collision Vector
-    List<List<float>> collidables = new List<List<float>>();
+    // Collision identifiers - identifies when key strokes should be accepted
+    bool rightValid = true;
+    bool leftValid = true;
+    bool jumpValid = true;
 
-    // Use this for initialization
     void Start ()
     {
-        // Add hardcoded collidables
-        collidables.Add(new List<float>(new float[] { 0, 0, 100, 0 }));
-        collidables.Add(new List<float>(new float[] { -5, 2, 1, 4 }));
-        collidables.Add(new List<float>(new float[] { 5, 1, 4, 2 }));
+
     }
 	
 
     // Update is called once per frame
     void Update()
-    {
-        float playerLeftbound = transform.position.x - .5f;
-        float playerRightbound = transform.position.x + .5f;
-        float playerUpperbound = transform.position.y + .5f;
-        float playerLowerbound = transform.position.y - .5f;
+    {      
+        List<GameObject> collisions = Collision.COL.checkCollision(this.gameObject);
 
-        bool xLeftCollision = false;
-        bool xRightCollision = false;
-        bool yUpperCollision = false;
-        bool yLowerCollision = false;
-
-        bool rValid = true;
-        bool lValid = true;
-        bool jValid = true;
-
-        foreach (List<float> item in collidables)
-        {
-            float itemLeftbound = item[0] - (item[2] / 2);
-            float itemRightbound = item[0] + (item[2] / 2);
-            float itemUpperbound = item[1] + (item[3] / 2);
-            float itemLowerbound = item[1] - (item[3] / 2);
-
-            // Left collision
-            if ((playerLeftbound <= itemRightbound) && (playerLeftbound >= itemLeftbound))
-            {
-                print("Holiday");
-                xLeftCollision = true;
-            }
-
-            // Right collision
-            if ((playerRightbound >= itemLeftbound) && (playerRightbound <= itemRightbound))
-            {
-                xRightCollision = true;
-            }
-
-            // Upper collision
-            if ((playerUpperbound >= itemLowerbound) && (playerUpperbound <= itemUpperbound))
-            {
-                yUpperCollision = true;
-            }
-
-            // Lower collision
-            if ((playerLowerbound <= itemUpperbound) && (playerLowerbound >= itemLowerbound))
-            {
-                yLowerCollision = true;
-            }
-        }
-
-        if (xLeftCollision)
+        // TODO: detect floor/ceiling and left/right collisions for restricted movement
+        // If there was a wall collision
+        if (collisions[0] != null)
         {
             xVelocity = 0;
-            lValid = false;
         }
 
-        if (xRightCollision)
-        {
-            xVelocity = 0;
-            rValid = false;
-        }
-
-        // Stop y movement on vertical collision & apply friction
-        if (yUpperCollision || yLowerCollision)
+        // If there was a floor/ceiling collision
+        if (collisions[1] != null)
         {
             yVelocity = 0;
+            jumpValid = true; // this needs to change
             xVelocity = Physics.PHYS.calcFriction(xVelocity);
         }
+        else
+            yVelocity = Physics.PHYS.calcGravity(yVelocity); // this will get you stuck on the ceiling
 
-        // If airborne, apply gravity
-        if (!yLowerCollision)
-        {
-            yVelocity = Physics.PHYS.calcGravity(yVelocity);
-            jValid = false;
-        }
 
         // Respond to key events
-        if (Input.GetKey(GameManager.GM.left) && lValid)
+        if (Input.GetKey(GameManager.GM.left) && leftValid)
         {
             if (xVelocity > -xMax)
             {
                 xVelocity = xVelocity - .01f;
             }
         }
-        if (Input.GetKey(GameManager.GM.right) && rValid)
+        if (Input.GetKey(GameManager.GM.right) && rightValid)
         {
             if (xVelocity < xMax)
             {
                 xVelocity = xVelocity + .01f;
             }
         }
-        if (Input.GetKey(GameManager.GM.jump) && jValid)
+        if (Input.GetKey(GameManager.GM.jump) && jumpValid)
         {
             transform.position += Vector3.up / 2;
         }

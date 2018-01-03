@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public KeyCode left { get; set; }
     public KeyCode right { get; set; }
 
-    // On game start
+    // Singleton pattern
     void Awake()
     {
         // Ensure we only ever have one GameManager object
@@ -25,19 +25,16 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        // Assign default keybindings in PlayerPrefs
-        jump = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("jumpKey", "Space"));
-        left = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "A"));
-        right = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("rightKey", "D"));
-
     }
 
     // Use this for initialization
     void Start ()
     {
-		
-	}
+        // Assign default keybindings in PlayerPrefs
+        jump = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("jumpKey", "Space"));
+        left = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "A"));
+        right = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("rightKey", "D"));
+    }
 	
 	// Update is called once per frame
 	void Update ()
