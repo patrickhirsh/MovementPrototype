@@ -7,6 +7,10 @@ public class Physics : MonoBehaviour
 
     public static Physics PHYS;
 
+    float coFriction = .25f;
+    float gravity = 9.8f;
+
+
     // On game start
     void Awake()
     {
@@ -21,6 +25,11 @@ public class Physics : MonoBehaviour
             Destroy(gameObject);
         }
 	}
+
+    void CalcFriction(float xVelocity)
+    {
+
+    }
 
     // Use this for initialization
     void Start()

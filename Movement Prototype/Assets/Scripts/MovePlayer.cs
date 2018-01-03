@@ -6,7 +6,7 @@ public class MovePlayer : MonoBehaviour
 {
     float xVelocity = 0;
     float yVelocity = 0;
-    float xDelta = .01f;
+    float mass = 80;
 
     // Use this for initialization
     void Start ()
@@ -20,11 +20,11 @@ public class MovePlayer : MonoBehaviour
 
         if (Input.GetKey(GameManager.GM.left))
         {
-            xVelocity -= xDelta;
+            // update with physics
         }
         if (Input.GetKey(GameManager.GM.right))
         {
-            xVelocity += xDelta;
+            // update with physics
         }
         if (Input.GetKey(GameManager.GM.jump))
         {
