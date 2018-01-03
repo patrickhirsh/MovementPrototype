@@ -13,13 +13,15 @@ public class MovePlayer : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-		
+		print ("Size: " + GetComponent<Renderer> ().bounds.size);
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
         bool hitKey = false;
+
+		yVelocity = Physics.PHYS.calcGravity (yVelocity);
 
         if (Input.GetKey(GameManager.GM.left))
         {
@@ -44,6 +46,14 @@ public class MovePlayer : MonoBehaviour
         }
 
         else if (!hitKey)
+        {
+            transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
+        }
+    }
+
+    void MoveHorizontal(bool direction, bool airborne = false)
+    {
+        if (airborne == false)
         {
             xVelocity = Physics.PHYS.calcFriction(xVelocity);
         }

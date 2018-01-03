@@ -27,6 +27,11 @@ public class Physics : MonoBehaviour
         }
 	}
 
+	public float calcGravity(float yVelocity)
+	{
+		return yVelocity - (gravity / fps);
+	}
+
     public float calcFriction(float xVelocity)
     {
         if (xVelocity > .01)
