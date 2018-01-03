@@ -7,6 +7,7 @@ public class Physics : MonoBehaviour
 
     public static Physics PHYS;
 
+    float fps = 60;
     float coFriction = .25f;
     float gravity = 9.8f;
 
@@ -26,9 +27,9 @@ public class Physics : MonoBehaviour
         }
 	}
 
-    void CalcFriction(float xVelocity)
+    public float CalcFriction(float xVelocity)
     {
-
+        return xVelocity + (coFriction * gravity)/60;
     }
 
     // Use this for initialization

@@ -31,6 +31,14 @@ public class MovePlayer : MonoBehaviour
             transform.position += Vector3.up / 2;
         }
 
-        transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
+        //transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
+    }
+
+    void MoveHorizontal(bool direction, bool airborne = false)
+    {
+        if (airborne == false)
+        {
+            
+        }
     }
 }
