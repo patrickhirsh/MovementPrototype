@@ -42,7 +42,7 @@ public class MovePlayer : MonoBehaviour
 
         // Respond to "Jump" key
         if (Input.GetKey(GameManager.GM.jump) && jumpValid)
-            yVelocity += .3f;
+            yVelocity += .4f;
 
         // Check for AABB gameObject collisions
         List<GameObject> collisionsAABB = Collision.COL.checkCollisionAABB(this.gameObject);

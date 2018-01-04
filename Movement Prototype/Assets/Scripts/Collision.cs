@@ -67,7 +67,7 @@ public class Collision : MonoBehaviour
         });
     }
 
-    // Checks collision between the given gameObject and all children of the Collidables gameObject
+    // Checks collision between the given gameObject and all children of the CollidablesAABB gameObject
     // returns two Gameobjects in the form: ( wall gameObject, floor/ceiling gameObject )
     // null gameObjects represent no collision of that type
     // non-null gameObjects are the objects which the given gObject collided with in that manor
