@@ -15,16 +15,13 @@ public class GameManager : MonoBehaviour
     // Singleton pattern
     void Awake()
     {
-        // Ensure we only ever have one GameManager object
         if (GM == null)
         {
             DontDestroyOnLoad(gameObject);
             GM = this;
         }
         else if(GM != this)
-        {
             Destroy(gameObject);
-        }
     }
 
     // Use this for initialization

@@ -24,26 +24,7 @@ public class MovePlayer : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {      
-        List<GameObject> collisions = Collision.COL.checkCollision(this.gameObject);
-
-        // TODO: detect floor/ceiling and left/right collisions for restricted movement
-        // If there was a wall collision
-        if (collisions[0] != null)
-        {
-            xVelocity = 0;
-        }
-
-        // If there was a floor/ceiling collision
-        if (collisions[1] != null)
-        {
-            yVelocity = 0;
-            jumpValid = true; // this needs to change
-            xVelocity = Physics.PHYS.calcFriction(xVelocity);
-        }
-        else
-            yVelocity = Physics.PHYS.calcGravity(yVelocity); // this will get you stuck on the ceiling
-
+    {
 
         // Respond to key events
         if (Input.GetKey(GameManager.GM.left) && leftValid)
@@ -64,6 +45,26 @@ public class MovePlayer : MonoBehaviour
         {
             transform.position += Vector3.up / 2;
         }
+
+
+        List<GameObject> collisions = Collision.COL.checkCollision(this.gameObject);
+
+
+        // If there was a wall collision
+        if (collisions[0] != null)
+        {
+            xVelocity = 0;
+        }
+
+        // If there was a floor/ceiling collision
+        if (collisions[1] != null)
+        {
+            yVelocity = 0;
+            jumpValid = true; // this needs to change
+            xVelocity = Physics.PHYS.calcFriction(xVelocity);
+        }
+        else
+            yVelocity = Physics.PHYS.calcGravity(yVelocity); // this will get you stuck on the ceiling
 
         // Apply velocity change
         transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);

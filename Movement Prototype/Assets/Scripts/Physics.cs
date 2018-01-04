@@ -7,47 +7,41 @@ public class Physics : MonoBehaviour
 
     public static Physics PHYS;
 
-    float fps = 60;
-    float coFriction = .5f;
-    float gravity = 1.2f;
+    // Physics constants
+    float FPS = 60;
+    float CO_FRICTION = .5f;
+    float GRAVITY = 1.2f;
 
 
     // Singleton pattern
     void Awake()
     {
-        // Ensure we only ever have one Physics object
         if (PHYS == null)
         {
             DontDestroyOnLoad(gameObject);
             PHYS = this;
         }
         else if (PHYS != this)
-        {
             Destroy(gameObject);
-        }
 	}
 
+    // Adjusts yVelocity for gravity
 	public float calcGravity(float yVelocity)
 	{
-		return yVelocity - (gravity / fps);
+		return yVelocity - (GRAVITY / FPS);
 	}
 
+    // Adjusts xVelocity for friction
     public float calcFriction(float xVelocity)
     {
         if (xVelocity > .01)
-        {
-            return xVelocity - (coFriction * gravity) / 60;
-        }
+            return xVelocity - (CO_FRICTION * GRAVITY) / FPS;
 
         else if (xVelocity < -.01)
-        {
-            return xVelocity + (coFriction * gravity) / 60;
-        }
+            return xVelocity + (CO_FRICTION * GRAVITY) / FPS;
 
         else
-        {
             return xVelocity = 0;
-        }
     }
 
     // Use this for initialization
