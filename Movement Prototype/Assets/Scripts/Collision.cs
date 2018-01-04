@@ -96,11 +96,11 @@ public class Collision : MonoBehaviour
                     {
                         // Floor collision detected
                         if (yActualDistance > 0)
-                            correction[1] = yOverlap + .0001f;
+                            correction[1] = yOverlap;
 
                         // Ceiling collision detected
                         else
-                            correction[1] = -yOverlap - .0001f;
+                            correction[1] = -yOverlap;
                     }
 
                     // Wall collision detected
@@ -108,11 +108,11 @@ public class Collision : MonoBehaviour
                     {
                         // Left collision detected
                         if (xActualDistance > 0)
-                            correction[0] = xOverlap + .0001f;
+                            correction[0] = xOverlap;
 
                         // Right collision detected
                         else
-                            correction[0] = -xOverlap - .0001f;
+                            correction[0] = -xOverlap;
                     }
                 }
             }
