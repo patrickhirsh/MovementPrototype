@@ -11,8 +11,11 @@ public class MovePlayer : MonoBehaviour
     float xVelocity = 0;
     float yVelocity = 0;
     float mass = 80;
-    float xMax = .3f;
-    float yMax = .3f;
+    float acceleration = .02f;
+    float sharpAcceleration = .05f;
+    float slowAcceleration = .015f;
+    float xMax = .15f;
+    float yMax = .15f;
 
     // Determines if a jump should register
     bool jumpValid = true;
@@ -33,16 +36,43 @@ public class MovePlayer : MonoBehaviour
         // Respond to "Left" key
         if (Input.GetKey(GameManager.GM.left))
             if (xVelocity > -xMax)
-                xVelocity = xVelocity - .01f;
+            {
+                if (jumpValid)
+                {
+                    if (xVelocity > 0)
+                        xVelocity -= sharpAcceleration;
+
+                    else
+                        xVelocity -= acceleration;
+                }
+                else
+                    xVelocity -= slowAcceleration;
+            }
+                
 
         // Respond to "Right" key
         if (Input.GetKey(GameManager.GM.right))
             if (xVelocity < xMax)
-                xVelocity = xVelocity + .01f;
+            {
+                if (jumpValid)
+                {
+                    if (xVelocity < 0)
+                        xVelocity += sharpAcceleration;
+
+                    else
+                        xVelocity += acceleration;
+                }
+                else
+                    xVelocity += slowAcceleration;         
+            }
+                
 
         // Respond to "Jump" key
         if (Input.GetKey(GameManager.GM.jump) && jumpValid)
             yVelocity += .4f;
+
+        // Apply velocity change
+        transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
 
         // Check for AABB gameObject collisions
         List<float> correction = Collision.COL.checkCollisionAABB(player);
@@ -50,8 +80,7 @@ public class MovePlayer : MonoBehaviour
         // Handle AABB gameObject collisions
         handleCollisionsAABB(correction);
 
-        // Apply velocity change
-        transform.position = new Vector3(transform.position.x + xVelocity, transform.position.y + yVelocity, transform.position.z);
+        
     }
 
 
@@ -78,7 +107,12 @@ public class MovePlayer : MonoBehaviour
             // The player is currectly on the ground
             if (correction[1] > 0)
             {
-                xVelocity = Physics.PHYS.calcFriction(xVelocity);
+                if (!(Input.GetKey(GameManager.GM.right) || Input.GetKey(GameManager.GM.left)))
+                {
+                    xVelocity = Physics.PHYS.calcFriction(xVelocity);
+                }
+                    
+
                 jumpValid = true;
             }           
         }
