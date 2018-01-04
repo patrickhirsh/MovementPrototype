@@ -2,12 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct AABBCollidable
+{
+    public Vector3 halfDims;
+    public GameObject gObject;
+
+    public AABBCollidable(GameObject gameObject)
+    {
+        gObject = gameObject;
+        halfDims = gObject.GetComponent<Renderer>().bounds.size;
+
+        // determine half-dimensions
+        halfDims[0] = halfDims[0] / 2;
+        halfDims[1] = halfDims[1] / 2;
+        halfDims[2] = halfDims[2] / 2;
+    }
+}
+
+
 public class Collision : MonoBehaviour
 {
 
     public static Collision COL;
 
-    List<GameObject> collidablesAABB;
+    List<AABBCollidable> AABBCollidables;
 
 
     // Singleton pattern
@@ -26,7 +44,7 @@ public class Collision : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        generateCollidablesAABB();
+        generateCollidables();
 	}
 	
 	// Update is called once per frame
@@ -36,7 +54,88 @@ public class Collision : MonoBehaviour
 	}
 
 
+
+    // Called on game start to initialize AABBCollidables
+    // Takes all children of AABB and adds them to the AABBCollidables list
+    void generateCollidables()
+    {
+        AABBCollidables = new List<AABBCollidable>();
+
+        // Find all children of the AABB gameObject
+        GameObject AABB = GameObject.Find("AABB");
+        int children = AABB.transform.childCount;
+
+        // Add children to collidablesAABBd
+        for (int i = 0; i < children; i++)
+        {
+            AABBCollidables.Add(new AABBCollidable(AABB.transform.GetChild(i).gameObject));
+        }
+    }
+
+    public List<float> checkCollisionAABB(AABBCollidable object1)
+    {
+        List<float> correction = new List<float>(new float[] {0, 0});
+
+        foreach (AABBCollidable object2 in AABBCollidables)
+        {
+            float xMinDistance = object1.halfDims[0] + object2.halfDims[0];
+            float xActualDistance = object1.gObject.transform.position[0] - object2.gObject.transform.position[0];
+
+            // Is object1's x within collision distance of object 2?
+            // NOTE: Positive xActualDistance = potential LEFT collision
+            //       Negative xActualDistance = potential RIGHT collision
+            if (Mathf.Abs(xActualDistance) < xMinDistance)
+            {
+                float yMinDistance = object1.halfDims[1] + object2.halfDims[1];
+                float yActualDistance = object1.gObject.transform.position[1] - object2.gObject.transform.position[1];
+
+                // Is object1's y within collision distance of object 2?
+                // NOTE: Positive yActualDistance = potential FLOOR collision
+                //       Negative yActualDistance = potential CEILING collision
+                if (Mathf.Abs(yActualDistance) < yMinDistance)
+                {
+
+                    // COLLISION DETECTED //
+
+                    float xOverlap = Mathf.Abs(xMinDistance - Mathf.Abs(xActualDistance));
+                    float yOverlap = Mathf.Abs(yActualDistance - Mathf.Abs(yMinDistance));
+
+                    // Ceiling/Floor collision detected
+                    if (xOverlap >= yOverlap)
+                    {
+                        // Floor collision detected
+                        if (yActualDistance > 0)
+                            correction[1] = yOverlap + .0001f;
+
+                        // Ceiling collision detected
+                        else
+                            correction[1] = -yOverlap - .0001f;              
+                    }
+
+                    // Wall collision detected
+                    else
+                    {
+                        // Left collision detected
+                        if (xActualDistance > 0)
+                            correction[0] = xOverlap + .0001f;
+
+                        // Right collision detected
+                        else
+                            correction[0] = -xOverlap - .0001f;
+                    }
+                }
+            }
+        }
+
+        return correction;
+    }
+
+
+
+
     #region AABB Collision Detection
+
+    /*
 
     // Called on game start to initialize collidablesAABB
     // Takes all children of AABB (child of Collidables) and adds them to the collidablesAABB list
@@ -48,7 +147,7 @@ public class Collision : MonoBehaviour
         GameObject AABB = GameObject.Find("AABB");
         int children = AABB.transform.childCount;
 
-        // Add children to collidablesAABB
+        // Add children to collidablesAABBd
         for (int i = 0; i < children; i++)
         {
             collidablesAABB.Add(AABB.transform.GetChild(i).gameObject);
@@ -167,6 +266,8 @@ public class Collision : MonoBehaviour
         else
             return "wall";
     }
+
+    */
 
     #endregion
 
