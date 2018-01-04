@@ -62,7 +62,10 @@ public class MovePlayer : MonoBehaviour
         // A horizontal collision occured
         if (correction[0] != 0)
         {
-            xVelocity = 0;
+            // Velocity should only be set to zero if the correction and velocity directions are opposite
+            if (((correction[0] > 0) && (xVelocity < 0)) || ((correction[0] < 0) && (xVelocity > 0)))
+                xVelocity = 0;
+
             transform.position = new Vector3(transform.position.x + correction[0], transform.position.y, transform.position.z);
         }
 
@@ -72,8 +75,12 @@ public class MovePlayer : MonoBehaviour
             yVelocity = 0;
             transform.position = new Vector3(transform.position.x, transform.position.y + correction[1], transform.position.z);
 
+            // The player is currectly on the ground
             if (correction[1] > 0)
+            {
+                xVelocity = Physics.PHYS.calcFriction(xVelocity);
                 jumpValid = true;
+            }           
         }
     }
 }
