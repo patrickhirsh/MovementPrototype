@@ -10,7 +10,7 @@ public class Physics : MonoBehaviour
     // Physics constants
     float FPS = 60;
     float CO_FRICTION = .5f;
-    float GRAVITY = 1.2f;
+    float GRAVITY = .8f;
 
 
     // Singleton pattern

@@ -71,7 +71,7 @@ public class Collision : MonoBehaviour
     // returns two Gameobjects in the form: ( wall gameObject, floor/ceiling gameObject )
     // null gameObjects represent no collision of that type
     // non-null gameObjects are the objects which the given gObject collided with in that manor
-    public List<GameObject> checkCollision(GameObject gObject)
+    public List<GameObject> checkCollisionAABB(GameObject gObject)
     {
         // create output array
         GameObject verticalCollidable = null;       // wall collidable
